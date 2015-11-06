@@ -61,6 +61,11 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
           pce.setCode($scope.initialCode);
         };
 
+        var getNormalizedCode = function() {
+          // Converts tabs to spaces.
+          return pce.getCode().replace(/\t/g, '  ');
+        };
+
         var errorIsHappening = false;
         var hasSubmittedAnswer = false;
 
@@ -75,15 +80,17 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
 
           // TODO(sll): Separate console output lines by newline characters.
           pce.eval("$('body div').text();", function(output) {
-            console.log('Code: ');
-            console.log(pce.getCode());
+            var normalizedCode = getNormalizedCode();
+
+            console.log('Code (normalized): ');
+            console.log(normalizedCode);
             console.log('Output: ');
             console.log(output);
             console.log('------');
 
             hasSubmittedAnswer = true;
             $scope.$parent.$parent.submitAnswer({
-              code: pce.getCode(),
+              code: normalizedCode,
               output: output || '',
               evaluation: '',
               error: ''
@@ -96,8 +103,10 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
             return;
           }
 
+          var normalizedCode = getNormalizedCode();
+
           console.log('Code: ');
-          console.log(pce.getCode());
+          console.log(normalizedCode);
           console.log('Error: ');
           console.log(error.message);
           console.log('------');
@@ -106,7 +115,7 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
           hasSubmittedAnswer = true;
 
           $scope.$parent.$parent.submitAnswer({
-            code: pce.getCode(),
+            code: normalizedCode,
             output: '',
             evaluation: '',
             error: error.message

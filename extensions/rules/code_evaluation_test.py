@@ -22,6 +22,72 @@ from core.tests import test_utils
 from extensions.rules import code_evaluation
 
 
+class CodeNormalizationUnitTests(test_utils.GenericTestBase):
+    """Tests the normalization of code strings."""
+
+    TEST_DATA = [{
+        'before': (
+            'def x():\n'
+            '    y = 345'),
+        'after': (
+            'def x():\n'
+            '    y = 345'),
+    }, {
+        # Indentation gets converted to 4 spaces. Trailing whitespace and empty
+        # lines are removed.
+        'before': (
+            'def x():         \n'
+            '    \n'
+            '  y = 345\n'
+            '            \n'
+            '       '),
+        'after': (
+            'def x():\n'
+            '    y = 345'),
+    }, {
+        # Full-line comments are removed, but not comments starting in the
+        # middle of a line.
+        'before': (
+            '# This is a comment.\n'
+            '  # This is a comment with some spaces before it.\n'
+            'def x():         # And a comment with some code before it.\n'
+            '  y = \'#String with hashes#\''),
+        'after': (
+            '    # This is a comment with some spaces before it.\n'
+            'def x():         # And a comment with some code before it.\n'
+            '    y = \'#String with hashes#\''),
+    }, {
+        # Complex indentation is handled correctly.
+        'before': (
+            'abcdefg\n'
+            '    hij\n'
+            '              ppppp\n'
+            'x\n'
+            '  abc\n'
+            '    bcd\n'
+            '  cde\n'
+            '              xxxxx\n'
+            '  y\n'
+            ' z'),
+        'after': (
+            'abcdefg\n'
+            '    hij\n'
+            '        ppppp\n'
+            'x\n'
+            '    abc\n'
+            '        bcd\n'
+            '    cde\n'
+            '        xxxxx\n'
+            '    y\n'
+            'z'),
+    }]
+
+    def test_code_normalization(self):
+        for test in self.TEST_DATA:
+            self.assertEqual(
+                code_evaluation.normalize_code(test['before']), test['after'])
+
+
 class CodeEvaluationRuleUnitTests(test_utils.GenericTestBase):
     """Tests for rules operating on CodeEvaluation objects."""
 
@@ -187,5 +253,4 @@ class CodeEvaluationRuleUnitTests(test_utils.GenericTestBase):
             'evaluation': '',
             'error': ''
         }))
-
 

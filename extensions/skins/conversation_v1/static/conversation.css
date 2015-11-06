@@ -129,10 +129,18 @@ html, body {
   max-width: 1420px;
 }
 
+.conversation-skin-help-card-container.ng-enter,
+.conversation-skin-help-card-container.ng-leave {
+  opacity: 0;
+  transform: translateX(200px);
+}
 .conversation-skin-help-card-container {
+  opacity: 1;
   position: fixed;
   right: 30px;
   top: 80px;
+  transform: translateX(0);
+  transition: all 500ms;
   z-index: 500;
 }
 .conversation-skin-help-card {

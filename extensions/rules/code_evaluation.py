@@ -87,8 +87,7 @@ def normalize_code(code_str):
 
 
 class CodeEquals(base.CodeEvaluationRule):
-    description = (
-        'has code equal to {{x|CodeString}}')
+    description = 'has code equal to {{x|CodeString}}'
 
     def _evaluate(self, subject):
         normalized_code = normalize_code(subject['code'])
@@ -98,8 +97,7 @@ class CodeEquals(base.CodeEvaluationRule):
 
 
 class CodeContains(base.CodeEvaluationRule):
-    description = (
-        'has code that contains {{x|CodeString}}')
+    description = 'has code that contains {{x|CodeString}}'
 
     def _evaluate(self, subject):
         normalized_code = normalize_code(subject['code'])
@@ -109,19 +107,17 @@ class CodeContains(base.CodeEvaluationRule):
 
 
 class CodeDoesNotContain(base.CodeEvaluationRule):
-    description = (
-        'has code that does not contain {{x|CodeString}}')
+    description = 'has code that does not contain {{x|CodeString}}'
 
     def _evaluate(self, subject):
-        normalized_code = ' '.join(subject['code'].split())
-        normalized_snippet = ' '.join(self.x.split())
+        normalized_code = normalize_code(subject['code'])
+        normalized_snippet = normalize_code(self.x)
         return self._fuzzify_truth_value(
             normalized_code.find(normalized_snippet) == -1)
 
 
 class OutputEquals(base.CodeEvaluationRule):
-    description = (
-        'has output equal to {{x|UnicodeString}}')
+    description = 'has output equal to {{x|CodeString}}'
 
     def _evaluate(self, subject):
         normalized_output = ' '.join(subject['output'].split())

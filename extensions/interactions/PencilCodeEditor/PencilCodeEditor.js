@@ -79,8 +79,13 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
           }
 
           // TODO(sll): Separate console output lines by newline characters.
-          pce.eval("$('body div').text();", function(output) {
+          pce.eval('document.body.innerHTML', function(pencilCodeHtml) {
             var normalizedCode = getNormalizedCode();
+
+            // Get all the divs, and extract their textual content.
+            var output = $.map($(pencilCodeHtml).filter('div'), function(elem) {
+              return $(elem).text();
+            }).join('\n');
 
             console.log('Code (normalized): ');
             console.log(normalizedCode);
@@ -95,7 +100,7 @@ oppia.directive('oppiaInteractivePencilCodeEditor', [
               evaluation: '',
               error: ''
             });
-          });
+          }, true);
         });
 
         pce.on('error', function(error) {
